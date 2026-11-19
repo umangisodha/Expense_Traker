@@ -1,43 +1,105 @@
 
 import { BiShoppingBag } from 'react-icons/bi';
 import '../styles/ExpenseForm.css'
-export default function ExpenseForm(){
-    return(
-    <div className="expenseform">
-       <form>
-       <h1>Expense Form</h1>
-        
-       <input
-        type="number"
-         name="amount"
-         placeholder="Enter amount.."
-        />
+import { FaSortAmountDown } from 'react-icons/fa';
+import { useState } from 'react';
+import { GrValidate } from 'react-icons/gr';
+export default function ExpenseForm() {
 
-        <input
-           type="text"
-           name="description"
-           placeholder="Enter Description.."
-        />
-        <input 
-           type="date"
-           name="date"
-           placeholder="Enter Date.."
-           />
+    const [formData, setFormData] = useState({
+        amount: null,
+        description: '',
+        date: new Date().toISOString().split('T')[0],
+        category: '',
+    });
+    const [errors, setError] = useState({});
 
-           <label htmlFor="category">Category:</label>
-           <select id="category"name="category"defaultValue="">
-             <option value="">Select Category</option>
-             <option value="food">Food</option>
-             <option value="Shopping">Shopping</option>
-             <option value="Transportation">Transportion</option>
-             <option value="education">Education</option>
-            <option value="phoneBill">Phone Bill</option>
-            <option value="entertainment">Entertainment</option>
-        </select>
-        <div className="btn">
-            <button type="button">Add Expense</button>
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: name === "amount" ? Number(value) : value,
+        }));
+
+    };
+
+    const validation = () => {
+        const newErrors = {};
+
+        if (!formData.amount || formData.amount <= 0) {
+            newErrors.amount = 'Enter an amount greater than 0';
+        }
+        if (!formData.description) { newErrors.description = 'Description is required'; }
+
+        if (!formData.date) {
+            newErrors.date = 'Date is required';
+        }
+
+        setError(newErrors);
+        return Object.keys(newErrors).length=== 0;
+    }
+
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!validation()) return;
+
+        console.log("Expense Added Successfully",
+            formData.amount, formData.description, formData.date,
+            formData.category);
+    }
+    return (
+        <div className="expenseform">
+            <form onSubmit={handleSubmit}>
+                <h1>Expense Form</h1>
+
+                <input
+                    type="number"
+                    name="amount"
+                    placeholder="Enter amount.."
+                    value={formData.amount || ""}
+                    onChange={handleChange}
+                />
+                {errors.amount && <p className="validation">{errors.amount}</p>}
+
+                <input
+                    type="text"
+                    name="description"
+                    placeholder="Enter Description.."
+                    value={formData.description}
+                    onChange={handleChange}
+                />
+                {errors.description && <p className="validation">
+                    {errors.description}</p>}
+
+               <input
+                    type="date"
+                    name="date"
+                    placeholder="Enter Date.."
+                    value={formData.date}
+                    onChange={handleChange}
+                />
+                {errors.date && <p className="validation">{errors.date}</p>}
+
+                <label htmlFor="category">Category:</label>
+                <select id="category" name="category"
+                    value={formData.category}
+                    onChange={
+                        handleChange}>
+                    <option value="">Select Category</option>
+                    <option value="food">Food</option>
+                    <option value="Shopping">Shopping</option>
+                    <option value="Transportation">Transportion</option>
+                    <option value="education">Education</option>
+                    <option value="phoneBill">Phone Bill</option>
+                    <option value="entertainment">Entertainment</option>
+                </select>
+                                {errors.category && <p className="validation">{errors.category}</p>}
+
+                <div className="btn">
+                    <button>Add Expense</button>
+                </div>
+            </form>
         </div>
-         </form>
-    </div>
     );
 }
