@@ -1,13 +1,13 @@
 
-import { BiShoppingBag } from 'react-icons/bi';
 import '../styles/ExpenseForm.css'
-import { FaSortAmountDown } from 'react-icons/fa';
 import { useState } from 'react';
-import { GrValidate } from 'react-icons/gr';
-export default function ExpenseForm() {
+import { useNavigate } from 'react-router-dom';
+import {v4 as uuidv4} from "uuid";
 
+export default function ExpenseForm() {
+const  navigate = useNavigate();
     const [formData, setFormData] = useState({
-        amount: null,
+        amount: '',
         description: '',
         date: new Date().toISOString().split('T')[0],
         category: '',
@@ -44,9 +44,13 @@ export default function ExpenseForm() {
         e.preventDefault();
         if (!validation()) return;
 
-        console.log("Expense Added Successfully",
-            formData.amount, formData.description, formData.date,
-            formData.category);
+        
+        const expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+        const  newExpense ={ ...formData, id: uuidv4() };
+
+        localStorage.setItem('expenses' ,JSON.stringify([...expenses,newExpense]));
+        console.log("Expense Added Successfully",newExpense);
+         navigate("/");   
     }
     return (
         <div className="expenseform">
