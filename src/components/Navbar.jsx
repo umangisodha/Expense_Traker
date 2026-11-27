@@ -1,7 +1,15 @@
 import { FaMoon } from 'react-icons/fa';
 import '../styles/Navbar.css';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+
 export default function Navbar(){
+
+    const navigate =useNavigate();
+    const logout = () => {
+        localStorage.removeItem('user');
+        navigate('/login');
+    };
+
     return(
         <div className='main-container'>
             <div className='nav-container'>
@@ -19,8 +27,9 @@ export default function Navbar(){
                          <li><NavLink to="/add-expense" className="links">Add Expense
                           </NavLink></li>
                     </ul>
-                         <ul>
-                        <li><a href="" className="links">Expense Items</a></li>
+
+                    <ul>
+                          <li><NavLink to="/expense-items" className="links">Expense Items</NavLink></li>
                     </ul>
                 </div>
 
@@ -28,7 +37,7 @@ export default function Navbar(){
                 <button className='theam-toggle'><FaMoon/></button>
             
 
-                <a href="" className="links logout-btn">
+                <a href="" className="links logout-btn" onClick={logout}>
                     Logout
                 </a>
                 </div>
